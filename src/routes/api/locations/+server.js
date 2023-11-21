@@ -55,6 +55,12 @@ export async function POST({ request, cookies, locals: { supabase, getSession } 
 // Handles HTTP PUT requests for /api/locations
 export async function PUT({ request, cookies, locals: { supabase, getSession }  }) {
 
+    const session = await getSession()
+    if (!session) {
+      // the user is not signed in
+      throw error(401, { message: 'Unauthorized' })
+    }
+
     let data = await request.json();
 
     console.log('update:', data);
@@ -80,6 +86,12 @@ export async function PUT({ request, cookies, locals: { supabase, getSession }  
 
 export async function DELETE({ params, request, locals: { supabase, getSession } }) {
 
+    const session = await getSession()
+    if (!session) {
+      // the user is not signed in
+      throw error(401, { message: 'Unauthorized' })
+    }
+    
     const TO_DO = true;
 
     if (!TO_DO) {

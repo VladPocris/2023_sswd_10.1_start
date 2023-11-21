@@ -3,6 +3,12 @@ import { json, error } from '@sveltejs/kit';
 
 export async function GET({ request, locals: { supabase, getSession }  }) {
 
+    const session = await getSession()
+    if (!session) {
+      // the user is not signed in
+      throw error(401, { message: 'Unauthorized' })
+    }
+    
     const categories = await supabase
     .from('location_category')
     .select('*')

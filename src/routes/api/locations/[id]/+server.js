@@ -30,6 +30,11 @@ export async function GET({ params, request, locals: { supabase, getSession } })
 
 export async function DELETE({ params, request, locals: { supabase, getSession } }) {
 
+    const session = await getSession()
+    if (!session) {
+      // the user is not signed in
+      throw error(401, { message: 'Unauthorized' })
+    }
     const TO_DO = false;
 
     if (!TO_DO) {
