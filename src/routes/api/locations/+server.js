@@ -53,3 +53,61 @@ export async function POST({ request, cookies, locals: { supabase, getSession } 
 
 // Endpoint for locations updates
 // Handles HTTP PUT requests for /api/locations
+export async function PUT({ request, cookies, locals: { supabase, getSession }  }) {
+
+    let data = await request.json();
+
+    console.log('update:', data);
+
+    const updated_loc = await supabase
+    .from('locations')
+    .update([data])
+    .eq('id', data.id)
+    .select()
+
+    if (updated_loc.error) {
+        return json({
+            status: updated_loc.status,
+            error: updated_loc.error
+        });
+    }
+
+    return json({
+        data: updated_loc.data[0],
+        status: updated_loc.status
+    });
+}
+
+export async function DELETE({ params, request, locals: { supabase, getSession } }) {
+
+    const TO_DO = true;
+
+    if (!TO_DO) {
+
+        if (params.id) {
+            const id = parseInt(params.id)
+            const result = await supabase
+                .from('locations')
+                .delete()
+                .eq('id', id)
+
+            if (result.error) {
+                return json({
+                    status: result.status,
+                    error: result.error
+                });
+            }
+
+            return json({
+                data: result.data,
+                status: result.status
+            });
+
+        }
+    } // end if TO_DO
+
+        return json({
+            status: 400,
+            error: 'Bad Request - to do'
+        });
+}

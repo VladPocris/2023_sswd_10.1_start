@@ -25,13 +25,21 @@ const schema = z.object({
 // Page load
 // Build the form and returns to page
 export async function load({ fetch, params }) {
-    // Build form
-    const form = await superValidate(schema);
 
+    let loc_update = null;
+
+	if (params.id){
+		const response = await fetch(`/api/locations/${params.id}`)
+		const json = await response.json();
+		loc_update = json.data; 
+	}
+
+	const form = await superValidate(loc_update, schema);
+    
     // Get categories (to display in a select list in the form)
     let categories;
     const response = await fetch('/api/categories');
-
+	
     // if resonse code 200 (ok)
     if (response.ok) {
         // get json from resonse
@@ -53,15 +61,16 @@ export const actions = {
         const form = await superValidate(request, schema);
         //console.log('POST', form);
 
+        let http_method = 'DELETE';
+
         if (!form.valid) {
             return fail(400, { form });
         }
 
         // Add the new location via n API call
         // note POST
-        const response = await fetch('/api/locations', {
-            method: 'POST',
-            body: JSON.stringify(form.data),
+        const response = await fetch(`/api/locations/${form.data.id}`, {
+            method: http_method,
             headers: {
                 'Content-Type': 'application/json'
             }
@@ -74,6 +83,6 @@ export const actions = {
             form.data.id = new_loc.data.id;
         }
         // return form and message
-        return message(form, `success: new location added`);
+        return message(form, `Success: Location Deleted`);
     }
 };

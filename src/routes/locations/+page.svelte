@@ -1,10 +1,16 @@
 <script>
 	// @ts-nocheck
+	
 
 	export let data;
 
 	let categories = data.categories;
 	let locations = data.locations;
+
+	let { supabase, session } = data;
+
+	// $ defines the values as reactive so that changes in values automatically update dependants.
+	$: ({ supabase, session } = data);
 
 	/**
 	 * @param id {number}
@@ -107,19 +113,23 @@
 									</td>
 									<td>{location.shared}</td>
 									<td>{location.favourite}</td>
-									<td
-										><a class="btn btn-sm btn-outline-primary" href="/locations" role="button">
+									{#if session && session.user.id === location.user_id}
+									<td><a 
+											class="btn btn-sm btn-outline-primary"
+											href="/add_up_location/{location.id}"
+											role="button">
 											<span class="bi bi-pencil-square" />
 										</a>
 									</td>
 									<td>
-										<button
-											on:click={() => alert('to do: call the delete_loc(id) function')}
+										<a 
 											class="btn btn-sm btn-outline-danger"
-										>
+											href="/delete_location/{location.id}"
+											role="button">
 											<span class="bi bi-trash" />
-										</button>
+										</a>
 									</td>
+									{/if}
 								</tr>
 							{/each}
 						</tbody>
@@ -132,6 +142,6 @@
 	{:else}
 		<p>No data to display</p>
 	{/if}
-	<p><a href="/add_location">Add new location</a></p>
+	<p><a href="/add_up_location">Add new location</a></p>
 </div>
 <!-- End Main Content-->

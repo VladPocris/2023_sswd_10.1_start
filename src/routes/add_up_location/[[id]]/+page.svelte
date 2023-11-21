@@ -3,13 +3,20 @@
 
 	// dependencies
 	import { page } from '$app/stores';
-	import { superForm } from 'sveltekit-superforms/client';
+	import { superForm, superValidate } from 'sveltekit-superforms/client';
 
 	export let data;
 
 	// create form instance
 	const { form, errors, enhance, delayed, message, constraints, reset } = superForm(data.form);
 	//console.log('data: ', data);
+
+	let form_title = 'Add New Location';
+
+	if($form.id){
+		form_title = `Update Location id: ${$form.id}`;
+	}
+
 </script>
 
 
@@ -28,7 +35,7 @@
 		<p><a href="/locations">Show Locations</a></p>
 	{:else}
 	<!-- Otherwise show the form -->
-	<h1>Add Location</h1>
+	<h1>{form_title}</h1>
 	<!-- Bootstrap Form Layout-->
 	<div class="w-75 mw-300 p-3">
 		<!-- this form will post when submitted -->
@@ -79,8 +86,9 @@
 				<input class="form-check-input" type="checkbox" name="favourite" bind:checked={$form.favourite} />
 				<label for="shared" class="form-check-label">Favourite</label>
 			</div>
+			
 			<!-- hidden id -->
-			<input type="hidden" bind:value={$form.id}>
+			<input type="hidden" name="id" bind:value={$form.id}>
 						
 			<!-- submit button -->
 			<div class="mb-3 mt-3">
